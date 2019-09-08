@@ -47,6 +47,28 @@ router.post('/', validateProj, (req, res) => {
         })
 })
 
+router.put('/:id', (req, res) => {
+    const { body } = req;
+    const { id } = req.params
+
+    console.log('Project created')
+    Project.update(id, body)
+        .then(newInfo => {
+            if (newInfo) {
+                Project.get(id)
+                    .then(info => res.status(200).json(info))
+                    .catch(err => {
+                        console.log(err)
+                        res.status(500).json({ error: "couldnt update project" });
+                    })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: 'Couldnt create the project' });
+        })
+
+})
 
 
 //MIDDLEWARE
@@ -55,7 +77,7 @@ function validateProjId(req, res, next) {
 
     Project.get(id)
         .then(specificProj => {
-            res.status(200).json({ specificProj });
+            res.status(200).json(specificProj);
 
         })
         .catch(err => {
@@ -70,7 +92,7 @@ function validateProj(req, res, next) {
 
     Project.insert(body)
         .then(specificProj => {
-            res.status(200).json({ specificProj });
+            res.status(200).json(specificProj);
         })
         .catch(err => {
             console.log(err)
@@ -78,6 +100,7 @@ function validateProj(req, res, next) {
 
         })
 }
+
 module.exports = router;
 
 
